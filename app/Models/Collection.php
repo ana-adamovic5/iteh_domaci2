@@ -9,6 +9,13 @@ class Collection extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'description',
+        'slogan',
+        'brand_id'
+    ];
+
     public function parfumes()
     {
         return $this->hasMany(Parfume::class);
