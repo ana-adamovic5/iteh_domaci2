@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\CollectionParfumeController;
+use App\Http\Controllers\ParfumeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,4 +19,25 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+//Route::get('/parfumes', [ParfumeController::class, 'index']);
+//Route::get('/parfumes/{id}', [ParfumeController::class, 'show']);
+
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::resource('parfumes', ParfumeController::class)->only(['show', 'index']);
+
+Route::get('/collections/{id}/parfumes', [CollectionParfumeController::class, 'index']);
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/profile', function (Request $request) {
+        return auth()->user();
+    });
+    Route::resource('parfumes', ParfumeController::class)->only(['update', 'store', 'destroy']);
+
+    // API route for logout user
+    Route::post('/logout', [AuthController::class, 'logout']);
 });

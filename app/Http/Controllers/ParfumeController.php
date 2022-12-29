@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ParfumeCollection;
+use App\Http\Resources\ParfumeResource;
 use App\Models\Parfume;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ParfumeController extends Controller
 {
@@ -15,7 +18,7 @@ class ParfumeController extends Controller
     public function index()
     {
         $parfumes = Parfume::all();
-        return $parfumes;
+        return new ParfumeCollection($parfumes);
     }
 
     /**
@@ -36,7 +39,28 @@ class ParfumeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'type' => 'string',
+            'gender' => 'string',
+            'size' => 'integer',
+            'price' => 'integer',
+            'collection_id' => 'integer',
+        ]);
+
+        if ($validator->fails())
+            return response()->json($validator->errors());
+
+        $parfume = Parfume::create([
+            'name' => $request->name,
+            'type' => $request->type,
+            'gender' => $request->gender,
+            'size' => $request->size,
+            'price' => $request->price,
+            'collection_id' => $request->collection_id,
+        ]);
+
+        return response()->json(['Parfume created successfully.', new ParfumeResource($parfume)]);
     }
 
     /**
@@ -47,7 +71,7 @@ class ParfumeController extends Controller
      */
     public function show(Parfume $parfume)
     {
-        //
+        return new ParfumeResource($parfume);
     }
 
     /**
@@ -70,7 +94,28 @@ class ParfumeController extends Controller
      */
     public function update(Request $request, Parfume $parfume)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'type' => 'string',
+            'gender' => 'string',
+            'size' => 'integer',
+            'price' => 'integer',
+            'collection_id' => 'integer',
+        ]);
+
+        if ($validator->fails())
+            return response()->json($validator->errors());
+
+        $parfume->name = $request->name;
+        $parfume->type = $request->type;
+        $parfume->gender = $request->gender;
+        $parfume->size = $request->size;
+        $parfume->price = $request->price;
+        $parfume->collection_id = $request->collection_id;
+
+        $parfume->save();
+
+        return response()->json(['Parfume updated successfully.', new ParfumeResource($parfume)]);
     }
 
     /**
@@ -81,6 +126,7 @@ class ParfumeController extends Controller
      */
     public function destroy(Parfume $parfume)
     {
-        //
+        $parfume->delete();
+        return response()->json('Parfume deleted successfully.');
     }
 }
