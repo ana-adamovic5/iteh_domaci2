@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use App\Models\Brand;
 use App\Models\Collection;
 use App\Models\Parfume;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -25,6 +26,8 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
+
+        User::factory(10)->create();
 
         $this->call([
             BrandSeeder::class,

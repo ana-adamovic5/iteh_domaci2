@@ -69,8 +69,11 @@ class ParfumeController extends Controller
      * @param  \App\Models\Parfume  $parfume
      * @return \Illuminate\Http\Response
      */
-    public function show(Parfume $parfume)
+    public function show($parfume_id)
     {
+        $parfume = Parfume::find($parfume_id);
+        if (is_null($parfume))
+            return response()->json('This parfume is out of stock.', 404);
         return new ParfumeResource($parfume);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ParfumeCollection;
 use App\Models\Parfume;
 use Illuminate\Http\Request;
 
@@ -14,6 +15,6 @@ class CollectionParfumeController extends Controller
         if (is_null($parfumes)) {
             return response()->json('Data not found', 404);
         }
-        return response()->json($parfumes);
+        return new ParfumeCollection($parfumes);
     }
 }
